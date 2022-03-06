@@ -20,37 +20,54 @@ steps:
     npm install 
 #    npm build 
   displayName: 'npm install and build'
-
-- script: |
-    npm pack
-    ls '$(Build.SourcesDirectory)'
-  displayName: 'Package for npm release'
-  
-- task: ExtractFiles@1
+- task: ArchiveFiles@2
+  displayName: 'Archive files'
   inputs:
-    archiveFilePatterns: '**/*.tgz'
-    destinationFolder: '$(Build.SourcesDirectory)/ext'
-    cleanDestinationFolder: true
-    overwriteExistingFiles: false
-
-
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: '*.tgz' 
-    targetFolder: $(Build.ArtifactStagingDirectory)/npm
-  displayName: 'Copy npm package'
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
-    contents: 'package.json' 
-    targetFolder: $(Build.ArtifactStagingDirectory)/npm
-  displayName: 'Copy package.json'
+    rootFolderOrFile: '$(Build.SourcesDirectory)'
+    includeRootFolder: false
+    archiveType: zip
+    archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
+    replaceExistingArchive: true
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)/npm'
-    artifactName: npm
-  displayName: 'Publish npm artifact'
+     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+     ArtifactName: 'drop'
+     publishLocation: 'Container'
+
+#- script: |
+#    npm pack
+#    ls '$(Build.SourcesDirectory)'
+#  displayName: 'Package for npm release'
+  
+
+
+#- task: CopyFiles@2
+#  inputs:
+#    sourceFolder: '$(Build.SourcesDirectory)'
+#    contents: '*.tgz' 
+#    targetFolder: $(Build.ArtifactStagingDirectory)/npm
+#  displayName: 'Copy npm package'
+#- task: CopyFiles@2
+#  inputs:
+#    sourceFolder: '$(Build.SourcesDirectory)'
+#    contents: 'package.json' 
+#    targetFolder: $(Build.ArtifactStagingDirectory)/npm
+#  displayName: 'Copy package.json'
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#    pathtoPublish: '$(Build.ArtifactStagingDirectory)/npm'
+#    artifactName: npm
+#  displayName: 'Publish npm artifact'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure Service Connection- Shivani'
+    appType: 'webAppLinux'
+    WebAppName: 'juiceshop31'
+    packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    RuntimeStack: 'NODE|12-lts'
+    StartupCommand: 'npm start'
 
 #- task: CmdLine@2
 #  inputs:
@@ -73,8 +90,4 @@ steps:
 #    replaceExistingArchive: true
 #    verbose: true
 
-#- task: PublishBuildArtifacts@1
-#  inputs:
-#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-#      ArtifactName: 'drop'
-#      publishLocation: 'Container'
+
