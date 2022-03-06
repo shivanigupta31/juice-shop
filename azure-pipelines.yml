@@ -67,7 +67,7 @@ steps:
     WebAppName: 'juiceshop31'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
     RuntimeStack: 'NODE|12-lts'
-    StartupCommand: 'npm start'
+    StartupCommand: 'node app.js'
 
 #- task: CmdLine@2
 #  inputs:
