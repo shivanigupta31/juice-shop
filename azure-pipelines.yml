@@ -20,29 +20,51 @@ steps:
     npm install 
     npm build 
   displayName: 'npm install and build'
-- task: CmdLine@2
+
+- script: |
+    npm pack
+  displayName: 'Package for npm release'
+- task: CopyFiles@2
   inputs:
-    script: |
-      echo 'printing root dir'
-      
-      echo '$(Build.BinariesDirectory)'
-      pwd
-      ls -lah /home/vsts/work/1
-      ls -lah /home/vsts/work/1/b
+    sourceFolder: '$(Build.SourcesDirectory)'
+    contents: '*.tgz' 
+    targetFolder: $(Build.ArtifactStagingDirectory)/npm
+  displayName: 'Copy npm package'
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(Build.SourcesDirectory)'
+    contents: 'package.json' 
+    targetFolder: $(Build.ArtifactStagingDirectory)/npm
+  displayName: 'Copy package.json'
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/npm'
+    artifactName: npm
+  displayName: 'Publish npm artifact'
+
+#- task: CmdLine@2
+#  inputs:
+#    script: |
+#      echo 'printing root dir'
+#      
+#      echo '$(Build.BinariesDirectory)'
+#      pwd
+#      ls -lah /home/vsts/work/1
+#      ls -lah /home/vsts/work/1/b
 
 
   
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '/home/vsts/work/1/s/build'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
-    verbose: true
+#- task: ArchiveFiles@2
+#  inputs:
+#    rootFolderOrFile: '/home/vsts/work/1/s/build'
+#    includeRootFolder: true
+#    archiveType: 'zip'
+#    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+#    replaceExistingArchive: true
+#    verbose: true
 
-- task: PublishBuildArtifacts@1
-  inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+#      ArtifactName: 'drop'
+#      publishLocation: 'Container'
