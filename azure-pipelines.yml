@@ -17,8 +17,9 @@ steps:
   
 
 - script: |
-    npm install
-    npm build
+    npm install 
+    cd '/home/vsts/work/1/b'
+    npm build '/home/vsts/work/1/s'
   displayName: 'npm install and build'
 - task: CmdLine@2
   inputs:
@@ -29,6 +30,7 @@ steps:
       pwd
       ls -lah /home/vsts/work/1
       ls -lah /home/vsts/work/1/b
+
 
   
 - task: ArchiveFiles@2
