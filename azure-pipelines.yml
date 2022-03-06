@@ -15,15 +15,20 @@ steps:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
   
-- task: WhiteSource@21
-  inputs:
-      cwd: '$(System.DefaultWorkingDirectory)'
-      projectName: 'Juice-Shop'
 
 - script: |
     npm install
     npm build
   displayName: 'npm install and build'
+- task: CmdLine@2
+  inputs:
+    script: |
+      echo 'printing root dir'
+      
+      echo '$(Build.BinariesDirectory)'
+      ls -lRah
+
+  
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.BinariesDirectory)'
@@ -31,6 +36,7 @@ steps:
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
     replaceExistingArchive: true
+    verbose: true
 
 - task: PublishBuildArtifacts@1
   inputs:
