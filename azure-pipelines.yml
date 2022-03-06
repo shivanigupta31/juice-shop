@@ -23,7 +23,17 @@ steps:
 
 - script: |
     npm pack
+    ls '$(Build.SourcesDirectory)'
   displayName: 'Package for npm release'
+  
+- task: ExtractFiles@1
+  inputs:
+    archiveFilePatterns: '**/*.tgz'
+    destinationFolder: '$(Build.SourcesDirectory)/ext'
+    cleanDestinationFolder: true
+    overwriteExistingFiles: false
+
+
 - task: CopyFiles@2
   inputs:
     sourceFolder: '$(Build.SourcesDirectory)'
