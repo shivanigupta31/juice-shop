@@ -14,6 +14,11 @@ steps:
   inputs:
     versionSpec: '12.x'
   displayName: 'Install Node.js'
+
+- task: WhiteSource@21
+  inputs:
+      cwd: '$(System.DefaultWorkingDirectory)'
+      projectName: 'juiceshop'
 - task: SonarQubePrepare@5
   inputs:
     SonarQube: 'Sonarqube-SG'
